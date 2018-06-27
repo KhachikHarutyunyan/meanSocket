@@ -7,9 +7,8 @@ module.exports = (router) => {
         if (!req.body.comment) {
             res.json({ success: false, message: 'message not found' });
         } else {
-            let message = new Message({
-                message: req.body.comment
-            });
+            let message = new Message({});
+            message.comment = req.body.comment;
 
             message.save((err) => {
                 if (err) {
@@ -19,6 +18,20 @@ module.exports = (router) => {
                 }
             });
         }
+    });
+
+    router.get('/getComments', (req, res) => {
+        Message.find({}, (err, comment) => {
+            if (err) {
+                res.json({ success: false, message: err });
+            } else {
+                if (!comment) {
+                    res.json({ success: false, message: 'Comments not found' });
+                } else {
+                    res.json({ success: false, comment: comment });
+                }
+            }
+        }).sort({'_id': -1});
     });
 
     return router;

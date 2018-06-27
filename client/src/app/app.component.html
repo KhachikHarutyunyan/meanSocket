@@ -3,21 +3,38 @@
     <h4>Comments</h4>
   </div>
 
-  <div *ngFor="let message of messages">{{ message }}</div>
+  <div *ngFor="let message of messages">
+    {{ message['comment'] }}
+  </div>
 
   <ul class="comment-section"  >
     <li class="comment user-comment" *ngFor="let message of messages">
       <div class="info">
           <a href="#">Comentator name</a>
-          <span>4 hours ago</span>
-          <button type="button" (click)="like()">Like</button>
+          <span>{{ message['date'] | date: 'short' }}</span>
+          <button type="button" (click)="like(message['like'])">Like {{ message['like'] }} </button>
       </div>
       <a class="avatar" href="#" >
         <img src="../assets/girl.svg" width="35" alt="Profile Avatar" title="Anie Silverston" />
       </a>
-      <p>{{ message }}</p>
+      <p>{{ message['comment'] }}</p>
+
 
     </li>
+
+    <li class="comment user-comment" *ngFor="let message of newMessage">
+        <div class="info">
+            <a href="#">Comentator name</a>
+            <span>4 hours ago</span>
+            <button type="button" (click)="like()">Like</button>
+        </div>
+        <a class="avatar" href="#" >
+          <img src="../assets/girl.svg" width="35" alt="Profile Avatar" title="Anie Silverston" />
+        </a>
+        <p>{{ message }}</p>
+
+
+      </li>
 
 
     <li class="write-new">

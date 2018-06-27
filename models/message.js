@@ -22,8 +22,9 @@ const messageValid = [
 ];
 
 const messageSchema = new Schema({
-    comment: { type: String, required: true, validate: messageValid },
-    // like: { type: String, required: true },
+    comment: { type: String },
+    like: { type: Number, default: 0 },
+    date: { type: Date, default: Date.now }
 });
 
 module.exports = mongoose.model('Message', messageSchema);

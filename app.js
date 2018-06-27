@@ -7,6 +7,7 @@ const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 mongoose.Promise = global.Promise;
 const db = require('./config/db');
+const Message = require('./models/message');
 
 const router = express.Router();
 
@@ -37,11 +38,34 @@ app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname + '/client/dist/index.html'));
 });
 
+
 io.on('connection', (socket) => {
-    console.log('user connected');
-    socket.on('new-message', (message) => {
-        io.emit('new-message', message);
+    console.log('connect user');
+
+    socket.on('disconnect', () => {
+        console.log('user disconnected');
     });
+
+    Message.find({}, (err, allComments) => {
+        if (err) throw err;
+        socket.emit('all-comments', allComments);
+    });
+
+    socket.on('new-message', (message) => {
+        // console.log(message);
+        let newMsg = new Message({ 
+            comment: message
+        });
+        newMsg.save((err) => {
+            if (err) throw err;
+            io.emit('new-message', message);
+        });        
+    });
+
+    socket.on('like', (like) => {
+        io.emit('do-like', like);
+    });
+
 });
 
 // server

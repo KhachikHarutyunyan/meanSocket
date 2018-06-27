@@ -11,7 +11,11 @@ export class AppComponent implements OnInit {
 
   commentForm: FormGroup;
 
-  messages: string[] = [];
+  messages = [];
+  newMessage = [];
+  likes = 0;
+
+  message;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -21,9 +25,17 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.commentService.getMessages().subscribe((message: string) => {
-      this.messages.push(message);
+
+    this.commentService.getAllMessages().subscribe((messages) => {
+      console.log(messages);
+      // this.messages.push(messages);
+      this.messages = messages;
     });
+
+    this.commentService.getMessages().subscribe((message: string) => {
+      this.newMessage.push(message);
+    });
+
   }
 
   createForm() {
@@ -33,11 +45,17 @@ export class AppComponent implements OnInit {
   }
 
   postComment() {
-    const message = this.commentForm.get('comment').value;
-    this.commentService.sendMessage(message);
+    this.message = this.commentForm.get('comment').value;
+    this.commentService.sendMessage(this.message);
+    // this.commentService.sendComment(message).subscribe(data => {
+    //   console.log('postComment ', data);
+    // });
     this.commentForm.reset();
   }
 
-  like() {}
+  like(like) {
+    like++;
+    this.commentService.doLike(like);
+  }
 
 }
